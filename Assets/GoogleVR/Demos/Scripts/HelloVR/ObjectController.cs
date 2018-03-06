@@ -21,6 +21,7 @@ public class ObjectController : MonoBehaviour {
     private Vector3 startingPosition;
     private Renderer renderer;
         private float countTime;
+        private IEnumerator coroutineClick;
 
     public Material inactiveMaterial;
     public Material gazedAtMaterial;
@@ -29,12 +30,13 @@ public class ObjectController : MonoBehaviour {
 
     void Start() {
         countTime = 0.0f;
+        coroutineClick = Click();
         startingPosition = transform.localPosition;
         renderer = GetComponent<Renderer>();
         SetGazedAt(false);
 }
 
-    IEnumerator click()
+    IEnumerator Click()
     {
             while (true)
             {
@@ -56,12 +58,13 @@ public class ObjectController : MonoBehaviour {
                 {
                     countTime = 0.0f;
                     renderer.material = gazedAtMaterial;
-                    StartCoroutine(click());
+                    StartCoroutine(coroutineClick);
                 }
                 else
                 {
                     renderer.material = inactiveMaterial;
-                    StopCoroutine(click());
+                    StopCoroutine(coroutineClick);
+                    //StopAllCoroutines();
                 }
             //renderer.material = (gazedAt ? gazedAtMaterial : inactiveMaterial);
             //return;
