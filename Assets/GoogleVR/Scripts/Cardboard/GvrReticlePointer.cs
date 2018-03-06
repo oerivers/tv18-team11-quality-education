@@ -18,6 +18,7 @@ using UnityEngine.EventSystems;
 /// Draws a circular reticle in front of any object that the user points at.
 /// The circle dilates if the object is clickable.
 public class GvrReticlePointer : GvrBasePointer {
+
   /// The constants below are expsed for testing. Minimum inner angle of the reticle (in degrees).
   public const float RETICLE_MIN_INNER_ANGLE = 0.0f;
 
@@ -37,7 +38,7 @@ public class GvrReticlePointer : GvrBasePointer {
   public int reticleSegments = 20;
 
   /// Growth speed multiplier for the reticle/
-  public float reticleGrowthSpeed = 8.0f;
+  public float reticleGrowthSpeed = 0.9f;
 
   /// Sorting order to use for the reticle's renderer.
   /// Range values come from https://docs.unity3d.com/ScriptReference/Renderer-sortingOrder.html.
@@ -71,14 +72,19 @@ public class GvrReticlePointer : GvrBasePointer {
     SetPointerTarget(raycastResultResult.worldPosition, isInteractive);
   }
 
-  public override void OnPointerHover(RaycastResult raycastResultResult, bool isInteractive) {
+    //public Material original;
+    //public Material hover;
+
+    public override void OnPointerHover(RaycastResult raycastResultResult, bool isInteractive) {
     SetPointerTarget(raycastResultResult.worldPosition, isInteractive);
+        //MaterialComp = hover;
   }
 
   public override void OnPointerExit(GameObject previousObject) {
     ReticleDistanceInMeters = maxReticleDistance;
     ReticleInnerAngle = RETICLE_MIN_INNER_ANGLE;
     ReticleOuterAngle = RETICLE_MIN_OUTER_ANGLE;
+        //MaterialComp = original;
   }
 
   public override void OnPointerClickDown() {}
