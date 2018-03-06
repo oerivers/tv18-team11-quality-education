@@ -20,11 +20,15 @@ using System.Collections;
 public class ObjectController : MonoBehaviour {
     private Vector3 startingPosition;
     private Renderer renderer;
+        private float countTime;
 
     public Material inactiveMaterial;
     public Material gazedAtMaterial;
 
+
+
     void Start() {
+        countTime = 0.0f;
         startingPosition = transform.localPosition;
         renderer = GetComponent<Renderer>();
         SetGazedAt(false);
@@ -32,20 +36,35 @@ public class ObjectController : MonoBehaviour {
 
     IEnumerator click()
     {
-        yield return new WaitForSeconds(3);
-        TeleportRandomly();
+            while (true)
+            {
+                countTime += 0.2f;
+                if (countTime >= 3)
+                {
+                    TeleportRandomly();
+                }
+                yield return new WaitForSeconds(0.2f);
+            }
+            
     }
     
 
     public void SetGazedAt(bool gazedAt) {
         if (inactiveMaterial != null && gazedAtMaterial != null) {
-            renderer.material = gazedAt ? gazedAtMaterial : inactiveMaterial;
-            StartCoroutine(click());
-            return;
-        }
-        else
-        {
-            StopCoroutine(click());
+
+                if (gazedAt)
+                {
+                    countTime = 0.0f;
+                    renderer.material = gazedAtMaterial;
+                    StartCoroutine(click());
+                }
+                else
+                {
+                    renderer.material = inactiveMaterial;
+                    StopCoroutine(click());
+                }
+            //renderer.material = (gazedAt ? gazedAtMaterial : inactiveMaterial);
+            //return;
         }
     }
 
