@@ -1,5 +1,7 @@
 ﻿namespace GoogleVR.HelloVR {
 	using UnityEngine;
+	using UnityEngine.SceneManagement;
+	using System.Collections;
 
 	[RequireComponent(typeof(Collider))]
 	public class ObjController : MonoBehaviour {
@@ -8,21 +10,48 @@
 
 		public Material inactiveMaterial;
 		public Material gazedAtMaterial;
+		public string scene;
+
+		private IEnumerator coroutine;
+		private bool gazedAt;
+		private int time;
 
 		void Start() {
 			startingPosition = transform.localPosition;
 			renderer = GetComponent<Renderer>();
-			SetGazedAt(false);
+			gazedAt = false;
+			SetGazedAt(gazedAt);
+			coroutine = Selection ();
+			StartCoroutine (coroutine);
 		}
 
-		public void SetGazedAt(bool gazedAt) {
+		public void SetGazedAt(bool gazed) {
+			this.time = 0;
+			this.gazedAt = gazed;
+			Debug.Log ("enter");
 			if (inactiveMaterial != null && gazedAtMaterial != null) {
-				renderer.material = gazedAt ? gazedAtMaterial : inactiveMaterial;
+				renderer.material = this.gazedAt ? gazedAtMaterial : inactiveMaterial;
 				return;
+			}
+		
+		}
+
+		private IEnumerator Selection(){
+			while (true) {
+				if(this.gazedAt){
+					this.time++;
+					if (this.time > 20) {
+						renderer.material = inactiveMaterial;
+						changeScene ();
+					}
+				}
+				yield return new WaitForSeconds(.1f);
 			}
 		}
 
-
+		private void changeScene(){
+			SceneManager.LoadScene (scene, LoadSceneMode.Single);
+		}
 
 		public void Recenter() {
 			#if !UNITY_EDITOR
